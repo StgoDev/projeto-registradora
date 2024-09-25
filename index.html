@@ -3,10 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Projeto Denival | Jhonatan e Maria Fernanda</title>
-</head>
-<body>
-    
+    <title>Registrador de Produtos</title>
     <script>
         // Definição da classe Produto
         class Produto {
@@ -14,176 +11,174 @@
                 this.nome = nome;
                 this.preco = preco;
             }
-        }
 
-        menu()
+            // Método para exibir informações do produto
+            info() {
+                return `${this.nome}: R$ ${this.preco}`;
+            }
 
-        // interface do menu
-        function menu(){
-            console.log(`---------------------------------------`)
-            console.log(`--------REGISTRADOR DE PRODUTOS--------`)
-            console.log(`---------------------------------------`)
-            console.log(`Opções:`)
-            console.log(`1 - Lista de Produtos`)
-            console.log(`2 - Cadastrar Produto`)
-            console.log(`3 - Produtos Cadastrados`)
-            console.log(`4 - Sair`)
-            let opcao = prompt("Digite a opção desejada:")
-            var numero = parseInt(opcao)
-        
-            // analisar opcao escolhida
-            switch (numero) {
-                case 1:
-                    listaDeProdutos()
-                    break;
-                
-                case 2:
-                    cadastroDeProdutos()
-                    break;
-
-                case 3:
-                    produtosCadastrados()
-                    break; 
-
-                case 4:
-                    console.log("Saindo do programa...")
-                default:
-                    break;
+            // Método para alterar o preço do produto
+            setPreco(novoPreco) {
+                this.preco = novoPreco;
             }
         }
 
-        // função que exibe a lista de produtos
-        function listaDeProdutos() {
-            
-            var frutas = ['Banana','Mamão', 'Melão', 'Laranja', 'Maçã','Goiaba'];
-            console.log("--------------------------");
-            console.log("---Produtos disponíveis---");
-            console.log("--------------------------");
-            console.log("Frutas:");
-            for (let index = 0; index < frutas.length; index++) {
-                console.log(frutas[index]);
-            }
+        // Objeto para armazenar os produtos, onde a chave será o nome do produto e o valor será uma instância de Produto
+        let produtos = {};
 
-            console.log("--------------------------");
-            console.log("1 - Ver mais produtos");
-            console.log("0 - Voltar ao Menu");
+        // Função para exibir o menu principal
+        function menu() {
+            console.clear();  // Limpa o console para exibir o menu de forma clara
+            console.log(`---------------------------------------`);
+            console.log(`--------REGISTRADOR DE PRODUTOS--------`);
+            console.log(`---------------------------------------`);
+            console.log(`1 - Listar Produtos`);
+            console.log(`2 - Adicionar Produto`);
+            console.log(`3 - Editar Produto`);
+            console.log(`4 - Deletar Produto`);
+            console.log(`5 - Filtrar Produto`);
+            console.log(`6 - Sair`);
+            console.log(`Digite o número da opção desejada no console e pressione Enter.`);
 
-            let opcao = prompt("Digite a opção desejada:");
+            let opcao = prompt("Digite a opção desejada (1-6):");
             let numero = parseInt(opcao);
 
+            // Chama a função de acordo com a opção escolhida
             switch (numero) {
                 case 1:
-                    console.log("--------------------------");
-                    console.log("---Produtos disponíveis---");
-                    console.log("--------------------------");
-                    console.log("Verduras:");
-                    console.log("Alface");
-                    console.log("Espinafre");
-                    console.log("Tomate");
-                    console.log("Cenoura");
-                    console.log("-------------------------");
-                    console.log("1 - Página anterior");
-                    console.log("0 - Voltar ao Menu");
-
-                    let opcaoVerduras = prompt("Digite a opção desejada:");
-                    let numeroVerduras = parseInt(opcaoVerduras);
-
-                    switch (numeroVerduras) {
-                        case 1: 
-                            listaDeProdutos();
-                            break;
-                        case 0:
-                            menu();
-                            break;
-                    }
+                    listarProdutos();
                     break;
-
-                case 0:
-                    menu();
+                case 2:
+                    adicionarProduto();
+                    break;
+                case 3:
+                    editarProduto();
+                    break;
+                case 4:
+                    deletarProduto();
+                    break;
+                case 5:
+                    filtrarProduto();
+                    break;
+                case 6:
+                    console.log("Saindo do programa...");
+                    break;
+                default:
+                    console.log("Opção inválida. Tente novamente.");
+                    setTimeout(menu, 1000);  // Retorna ao menu após 1 segundo
                     break;
             }
+        }
 
-            /*console.log("--------------------------")
-            console.log("---Produtos disponíveis---")
-            console.log("--------------------------")
-            console.log("Frutas:")
-            console.log("Banana")
-            console.log("Mamão")
-            console.log("Melão")
-            console.log("Laranja")
-            console.log("Maçã")
-            console.log("Goiaba")
-            console.log("-------------------------")
-            console.log("1 - Próxima Página ")
-            console.log("0 - Voltar ao menu")
-
-            // ler a opção proxima página ou voltar
-            let opcao = prompt("Digite a opção desejada:")
-            let numero = parseInt(opcao)
-
-            // analisar opcao escolhida
-            switch (numero) {
-                case 1:
-                console.log("--------------------------")
-                console.log("---Produtos disponíveis---")
-                console.log("--------------------------")
-                console.log("Verduras:")
-                console.log("Alface")
-                console.log("Espinafre")
-                console.log("Tomate")
-                console.log("Cenoura")
-                console.log("-------------------------")
-                console.log("1 - Página anterior ")
-                console.log("0 - Voltar ao Menu")
-
-                // ler a opção proxima página ou voltar
-                let opcao = prompt("Digite a opção desejada:")
-                let numero = parseInt(opcao)
-
-                // analisar opcao escolhida
-                switch (numero) {
-                    case 1: 
-                    listaDeProdutos()
-                    break;
-
-                    case 0:
-                    menu()
-                    break;
+        // Função que lista os produtos disponíveis
+        function listarProdutos() {
+            console.clear();
+            if (Object.keys(produtos).length === 0) {
+                console.log("Nenhum produto cadastrado.");
+            } else {
+                console.log("--------------------------");
+                console.log("Produtos Disponíveis:");
+                for (let nome in produtos) {
+                    console.log(produtos[nome].info());  // Chama o método info() da classe Produto
                 }
-                
-                case 0:
-                    menu()
-                    break;
-            }*/
-        }
-
-        // função de cadastro dos produtos
-        function cadastroDeProdutos() {
-            console.log("Cadastre os produtos");
-
-            // criação do array
-            let produtos = [];
-
-            //leitura de produtos
-            let continuar = '1';
-            while (continuar == '1') {
-                let nome = prompt("Digite o nome do produto:");
-                let preco = prompt("Digite o preço:");
-                const produto = new Produto(nome, preco);
-                produtos.push(produto);
-                continuar = prompt("Para continuar digite 1 e para sair 0.");
+                console.log("--------------------------");
             }
-            console.log("Produtos cadastrados:");
-            for (let index = 0; index < produtos.length; index++) {
-                console.log(produtos[index]);
-                
+
+            console.log("Pressione Enter para voltar ao menu...");
+            prompt();  // Pausa até o usuário pressionar Enter
+            menu();    // Retorna ao menu
+        }
+
+        // Função para adicionar produtos
+        function adicionarProduto() {
+            console.clear();
+            console.log("Adicionar Produto");
+            let nome = prompt("Digite o nome do produto:");
+            let preco = prompt("Digite o preço do produto:");
+
+            if (nome && preco) {
+                produtos[nome] = new Produto(nome, preco);  // Cria uma instância da classe Produto
+                console.log(`${nome} foi adicionado com o preço R$ ${preco}.`);
+            } else {
+                console.log("Por favor, preencha todos os campos.");
             }
+
+            console.log("Pressione Enter para voltar ao menu...");
+            prompt();  // Pausa até o usuário pressionar Enter
+            menu();    // Retorna ao menu
         }
 
-        function produtosCadastrados() {
-            console.log(`OI EU SOU A FUNCAO 3`)
+        // Função para editar um produto
+        function editarProduto() {
+            console.clear();
+            console.log("Editar Produto");
+            let nome = prompt("Digite o nome do produto que deseja editar:");
+
+            if (produtos.hasOwnProperty(nome)) {
+                let novoPreco = prompt(`Digite o novo preço de ${nome}:`);
+                if (novoPreco) {
+                    produtos[nome].setPreco(novoPreco);  // Usa o método setPreco() da classe Produto
+                    console.log(`${nome} foi atualizado com o novo preço de R$ ${novoPreco}.`);
+                } else {
+                    console.log("Preço inválido.");
+                }
+            } else {
+                console.log(`${nome} não foi encontrado.`);
+            }
+
+            console.log("Pressione Enter para voltar ao menu...");
+            prompt();  // Pausa até o usuário pressionar Enter
+            menu();    // Retorna ao menu
         }
 
+        // Função para deletar um produto
+        function deletarProduto() {
+            console.clear();
+            console.log("Deletar Produto");
+            let nome = prompt("Digite o nome do produto que deseja deletar:");
+
+            if (produtos.hasOwnProperty(nome)) {
+                delete produtos[nome];
+                console.log(`${nome} foi removido com sucesso.`);
+            } else {
+                console.log(`${nome} não foi encontrado.`);
+            }
+
+            console.log("Pressione Enter para voltar ao menu...");
+            prompt();  // Pausa até o usuário pressionar Enter
+            menu();    // Retorna ao menu
+        }
+
+        // Função para filtrar produtos por nome
+        function filtrarProduto() {
+            console.clear();
+            let termo = prompt("Digite o nome ou parte do nome do produto que deseja filtrar:");
+
+            console.log("--------------------------");
+            console.log("Produtos Filtrados:");
+            let encontrados = false;
+            for (let nome in produtos) {
+                if (nome.toLowerCase().includes(termo.toLowerCase())) {
+                    console.log(produtos[nome].info());  // Chama o método info() da classe Produto
+                    encontrados = true;
+                }
+            }
+            if (!encontrados) {
+                console.log("Nenhum produto encontrado.");
+            }
+            console.log("--------------------------");
+
+            console.log("Pressione Enter para voltar ao menu...");
+            prompt();  // Pausa até o usuário pressionar Enter
+            menu();    // Retorna ao menu
+        }
+
+        // Inicia o menu principal
+        menu();
     </script>
+</head>
+<body>
+    <h1>Registrador de Produtos</h1>
+    <p>Abra o console do navegador para interagir com o sistema.</p>
 </body>
 </html>
